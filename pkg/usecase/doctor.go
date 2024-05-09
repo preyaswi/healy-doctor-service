@@ -102,3 +102,10 @@ func (du *doctorUseCase) DoctorLogin( doctor models.DoctorLogin) (models.DoctorS
 		RefreshToken: refreshToken,
 	}, nil
 }
+func (du *doctorUseCase)DoctorsList() ([]models.DoctorsDetails, error) {
+	doctors,err:=du.doctorRepository.GetDoctorsDetail()
+	if err!=nil{
+		return nil,err
+	}
+	return doctors,nil
+}

@@ -9,4 +9,5 @@ type DoctorRepository interface{
 	CheckDoctorExistsByPhone(phone string)(*domain.Doctor,error)
 	CheckDoctorexistsByLicenseNumber(licenceNumber string)(*domain.Doctor,error)
 	DoctorSignup(models.DoctorSignUp)(models.DoctorDetail,error)
+	GetDoctorsDetail()([]models.DoctorsDetails,error)
 }

@@ -38,3 +38,7 @@ type DoctorDetails struct{
 	YearsOfExperience int32
 	LicenseNumber     string
 }
+type DoctorsDetails struct{
+	DoctorDetail DoctorDetail
+	Rating int32
+}

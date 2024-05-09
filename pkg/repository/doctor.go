@@ -57,11 +57,49 @@ func (dr *doctorRepository) DoctorSignup(doctor models.DoctorSignUp) (models.Doc
 	INSERT INTO doctors(full_name, email, phone_number,password, specialization, years_of_experience, license_number)
 	VALUES(?, ?, ?, ?, ?, ?,?)
 	RETURNING id, full_name, email, specialization, years_of_experience,license_number
-`, doctor.FullName, doctor.Email, doctor.PhoneNumber,doctor.Password, doctor.Specialization, doctor.YearsOfExperience, doctor.LicenseNumber).
-	Scan(&signupDetail).Error
+`, doctor.FullName, doctor.Email, doctor.PhoneNumber, doctor.Password, doctor.Specialization, doctor.YearsOfExperience, doctor.LicenseNumber).
+		Scan(&signupDetail).Error
 
 	if err != nil {
 		return models.DoctorDetail{}, err
 	}
 	return signupDetail, nil
+}
+func (dr *doctorRepository) GetDoctorsDetail() ([]models.DoctorsDetails, error) {
+	// Query to select doctors along with their average ratings from the review table
+	rows, err := dr.DB.Raw(`
+		SELECT 
+			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number, COALESCE(AVG(r.rating), 0) AS average_rating
+		FROM 
+			doctors AS d
+		LEFT JOIN 
+			review AS r ON d.id = r.doctor_id
+		GROUP BY 
+			d.id
+		ORDER BY 
+			average_rating DESC
+	`).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var doctorsDetails []models.DoctorsDetails
+	for rows.Next() {
+		var doctorDetail models.DoctorDetail
+		var rating float64 // Use float64 for average rating
+
+		// Scan the row into variables
+		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
+			return nil, err
+		}
+
+		// Append doctor details to the result
+		doctorsDetails = append(doctorsDetails, models.DoctorsDetails{
+			DoctorDetail: doctorDetail,
+			Rating:       int32(rating), // Convert float64 to int32
+		})
+	}
+
+	return doctorsDetails, nil
 }
