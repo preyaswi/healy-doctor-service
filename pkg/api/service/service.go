@@ -5,7 +5,6 @@ import (
 	"doctor-service/pkg/models"
 	"doctor-service/pkg/pb"
 	usecaseint "doctor-service/pkg/usecase/interface"
-	"fmt"
 )
 type DoctorServer struct{
 	doctorUseCase usecaseint.DoctorUseCase
@@ -72,7 +71,6 @@ func (d *DoctorServer)DoctorLogin(ctx context.Context,DoctorLoginRequest *pb.Doc
 	},nil
 }
 func (d *DoctorServer)DoctorsDetail(ctx context.Context,req *pb.Doreq) (*pb.DoctorsDetailre, error)  {
-	fmt.Println("jeafacsz")
 	doctors,err:=d.doctorUseCase.DoctorsList()
 	if err!=nil{
 		return &pb.DoctorsDetailre{},err
@@ -96,5 +94,22 @@ func (d *DoctorServer)DoctorsDetail(ctx context.Context,req *pb.Doreq) (*pb.Doct
 	return &pb.DoctorsDetailre{
 		DoctorsDetailr: doctorDetails,
 	}, nil
+
+}
+func ( d *DoctorServer)IndividualDoctor(ctx context.Context,req *pb.Doid) (*pb.DoctorsDetailr, error)  {
+	doctor,err:=d.doctorUseCase.IndividualDoctor(req.DoctorId)
+	if err!=nil{
+		return &pb.DoctorsDetailr{},err
+	}
+	return &pb.DoctorsDetailr{
+		Id: uint64(doctor.DoctorDetail.Id),
+		FullName: doctor.DoctorDetail.FullName,
+		Email: doctor.DoctorDetail.Email,
+		PhoneNumber: doctor.DoctorDetail.PhoneNumber,
+		Specialization: doctor.DoctorDetail.Specialization,
+		YearsOfExperience: doctor.DoctorDetail.YearsOfExperience,
+		LicenseNumber: doctor.DoctorDetail.LicenseNumber,
+		Rating: doctor.Rating,
+	},nil
 
 }

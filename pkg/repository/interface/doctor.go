@@ -10,4 +10,5 @@ type DoctorRepository interface{
 	CheckDoctorexistsByLicenseNumber(licenceNumber string)(*domain.Doctor,error)
 	DoctorSignup(models.DoctorSignUp)(models.DoctorDetail,error)
 	GetDoctorsDetail()([]models.DoctorsDetails,error)
+	ShowIndividualDoctor(doctor_id string)(models.DoctorsDetails,error)
 }

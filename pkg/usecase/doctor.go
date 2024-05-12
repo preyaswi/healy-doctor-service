@@ -109,3 +109,10 @@ func (du *doctorUseCase)DoctorsList() ([]models.DoctorsDetails, error) {
 	}
 	return doctors,nil
 }
+func(du *doctorUseCase) IndividualDoctor(doctor_id string)(models.DoctorsDetails,error){
+	doctor,err:=du.doctorRepository.ShowIndividualDoctor(doctor_id)
+	if err!=nil{
+		return models.DoctorsDetails{},err
+	}
+	return doctor,nil
+}
