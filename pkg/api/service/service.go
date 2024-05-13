@@ -129,3 +129,16 @@ func (d *DoctorServer) DoctorProfile(ctx context.Context,req *pb.DoId) (*pb.Doct
 		Rating: doctor.Rating,
 	},err
 }
+func (d *DoctorServer)RateDoctor(ctx context.Context,req *pb.RateDoctorReq) (*pb.Rate, error)  {
+	patientid:=req.Patientid
+	doctorId:=req.DoctorId
+	rate:=req.Rate.Rate
+	rated,err:=d.doctorUseCase.RateDoctor(int(patientid),doctorId,rate)
+	if err!=nil{
+		return &pb.Rate{},err
+	}
+	return &pb.Rate{
+		Rate: rated,
+	},nil
+
+}

@@ -6,6 +6,7 @@ import (
 	interfaces "doctor-service/pkg/repository/interface"
 	usecaseint "doctor-service/pkg/usecase/interface"
 	"errors"
+	"fmt"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -122,4 +123,20 @@ func (du *doctorUseCase)DoctorProfile(id int)(models.DoctorsDetails,error)  {
 		return models.DoctorsDetails{},err
 	}
 	return doctor,nil
+}
+func (du *doctorUseCase) RateDoctor(patientid int,doctorid string,rate uint32)(uint32,error) {
+	ok,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
+	if err!=nil{
+		return 0,err
+	}
+	if !ok{
+		return 0,errors.New("doctor with this id is not exsisting")
+	}
+	rated,err:=du.doctorRepository.RateDoctor(patientid,doctorid,rate)
+	if err!=nil{
+		fmt.Println(rated,"rated")
+		return 0,err
+	}
+	return uint32(rated),nil
+
 }

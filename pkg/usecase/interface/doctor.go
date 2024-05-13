@@ -7,4 +7,5 @@ type DoctorUseCase interface{
 	DoctorsList()([]models.DoctorsDetails,error)
 	IndividualDoctor(doctor_id string)(models.DoctorsDetails,error)
 	DoctorProfile(id int)(models.DoctorsDetails,error)
+	RateDoctor(patientid int,doctorid string,rate uint32)(uint32,error)
 }

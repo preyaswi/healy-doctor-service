@@ -123,26 +123,25 @@ func (dr *doctorRepository) ShowIndividualDoctor(doctor_id string) (models.Docto
 		return models.DoctorsDetails{}, err
 	}
 	if !rows.Next() {
-        return models.DoctorsDetails{}, errors.New("no doctor details found")
-    }
-	
+		return models.DoctorsDetails{}, errors.New("no doctor details found")
+	}
+
 	defer rows.Close()
 	var doctorDetails models.DoctorsDetails
 
-		var doctorDetail models.DoctorDetail
-		var rating float64 // Use float64 for average rating
+	var doctorDetail models.DoctorDetail
+	var rating float64 // Use float64 for average rating
 
-		// Scan the row into variables
-		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
-			return models.DoctorsDetails{}, err
-		}
-		fmt.Println(doctorDetail, "doctodetails")
-		// Populate the result with doctor details
-		doctorDetails = models.DoctorsDetails{
-			DoctorDetail: doctorDetail,
-			Rating:       int32(rating), // Convert float64 to int32
-		}
-	
+	// Scan the row into variables
+	if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
+		return models.DoctorsDetails{}, err
+	}
+	fmt.Println(doctorDetail, "doctodetails")
+	// Populate the result with doctor details
+	doctorDetails = models.DoctorsDetails{
+		DoctorDetail: doctorDetail,
+		Rating:       int32(rating), // Convert float64 to int32
+	}
 
 	return doctorDetails, nil
 }
@@ -184,4 +183,25 @@ func (dr *doctorRepository) DoctorProfile(id int) (models.DoctorsDetails, error)
 	}
 
 	return doctorDetails, nil
+}
+func (dr *doctorRepository) CheckDoctorExistbyid(id string) (bool, error) {
+	var count int64
+	result := dr.DB.Model(&domain.Doctor{}).Where("id = ?", id).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+	return count > 0, nil
+}
+func (dr *doctorRepository) RateDoctor(patient_id int, doctor_id string, rate uint32) (int, error) {
+	var rating int
+	err := dr.DB.Raw(`
+	INSERT INTO reviews (doctor_id, patient_id, rating)
+	VALUES (?, ?, ?)
+	RETURNING rating
+	`, doctor_id, patient_id, rate).Scan(&rating).Error
+	if err != nil {
+		return 0, err
+	}
+	return rating, nil
+
 }
