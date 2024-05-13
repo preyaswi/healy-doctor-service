@@ -11,4 +11,5 @@ type DoctorRepository interface{
 	DoctorSignup(models.DoctorSignUp)(models.DoctorDetail,error)
 	GetDoctorsDetail()([]models.DoctorsDetails,error)
 	ShowIndividualDoctor(doctor_id string)(models.DoctorsDetails,error)
+	DoctorProfile(id int)(models.DoctorsDetails,error)
 }

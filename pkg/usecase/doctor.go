@@ -116,3 +116,10 @@ func(du *doctorUseCase) IndividualDoctor(doctor_id string)(models.DoctorsDetails
 	}
 	return doctor,nil
 }
+func (du *doctorUseCase)DoctorProfile(id int)(models.DoctorsDetails,error)  {
+	doctor,err:=du.doctorRepository.DoctorProfile(id)
+	if err!=nil{
+		return models.DoctorsDetails{},err
+	}
+	return doctor,nil
+}

@@ -113,3 +113,19 @@ func ( d *DoctorServer)IndividualDoctor(ctx context.Context,req *pb.Doid) (*pb.D
 	},nil
 
 }
+func (d *DoctorServer) DoctorProfile(ctx context.Context,req *pb.DoId) (*pb.DoctorsDetailr, error) {
+	doctor,err:=d.doctorUseCase.DoctorProfile(int(req.Id))
+	if err!=nil{
+		return &pb.DoctorsDetailr{},err
+	}
+	return &pb.DoctorsDetailr{
+		Id: uint64(doctor.DoctorDetail.Id),
+		FullName: doctor.DoctorDetail.FullName,
+		Email: doctor.DoctorDetail.Email,
+		PhoneNumber: doctor.DoctorDetail.PhoneNumber,
+		Specialization: doctor.DoctorDetail.Specialization,
+		YearsOfExperience: doctor.DoctorDetail.YearsOfExperience,
+		LicenseNumber: doctor.DoctorDetail.LicenseNumber,
+		Rating: doctor.Rating,
+	},err
+}

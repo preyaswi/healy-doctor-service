@@ -6,4 +6,5 @@ type DoctorUseCase interface{
 	DoctorLogin(models.DoctorLogin)(models.DoctorSignUpResponse,error)
 	DoctorsList()([]models.DoctorsDetails,error)
 	IndividualDoctor(doctor_id string)(models.DoctorsDetails,error)
+	DoctorProfile(id int)(models.DoctorsDetails,error)
 }

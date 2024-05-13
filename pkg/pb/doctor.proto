@@ -7,6 +7,7 @@ service Doctor{
 
     rpc DoctorsDetail(Doreq)returns(DoctorsDetailre){};
     rpc IndividualDoctor(Doid)returns(DoctorsDetailr){};
+    rpc DoctorProfile(Do_id)returns(DoctorsDetailr){};
 
 }
 message DoctorSignUpRequest{
@@ -46,7 +47,9 @@ message DoctorLoginResponse{
 	string RefreshToken =3;    
 }
 message Doreq{}
-
+message Do_id{
+    uint64 id=1;
+}
 message DoctorsDetailr{
     uint64 id=1;
     string full_name = 2;
