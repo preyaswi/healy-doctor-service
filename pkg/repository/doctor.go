@@ -196,8 +196,10 @@ func (dr *doctorRepository) RateDoctor(patient_id int, doctor_id string, rate ui
 	var rating int
 	err := dr.DB.Raw(`
 	INSERT INTO reviews (doctor_id, patient_id, rating)
-	VALUES (?, ?, ?)
-	RETURNING rating
+		VALUES (?, ?, ?)
+		ON CONFLICT (doctor_id, patient_id) 
+		DO UPDATE SET rating = EXCLUDED.rating
+		RETURNING rating
 	`, doctor_id, patient_id, rate).Scan(&rating).Error
 	if err != nil {
 		return 0, err
