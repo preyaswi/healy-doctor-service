@@ -142,3 +142,24 @@ func (d *DoctorServer)RateDoctor(ctx context.Context,req *pb.RateDoctorReq) (*pb
 	},nil
 
 }
+func (d *DoctorServer) UpdateDoctorProifle(ctx context.Context,req *pb.UpdateReq) (*pb.UpdateDoctor, error) {
+	doctorid:=req.Id
+	body:=models.UpdateDoctor{
+		FullName: req.Body.FullName,
+		Email: req.Body.Email,
+		PhoneNumber: req.Body.PhoneNumber,
+		Specialization: req.Body.Specialization,
+		YearsOfExperience: req.Body.YearsOfExperience,
+	}
+	res,err:=d.doctorUseCase.UpdateDoctorProfile(int(doctorid),body)
+	if err!=nil{
+		return &pb.UpdateDoctor{},err
+	}
+	return &pb.UpdateDoctor{
+		FullName: res.FullName,
+		Email: res.Email,
+		PhoneNumber: res.PhoneNumber,
+		Specialization: res.Specialization,
+		YearsOfExperience: res.YearsOfExperience,
+	},nil
+}

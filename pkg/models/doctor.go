@@ -42,3 +42,10 @@ type DoctorsDetails struct{
 	DoctorDetail DoctorDetail
 	Rating int32
 }
+type UpdateDoctor struct{
+	FullName          string `json:"full_name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phone_number"`
+	Specialization    string `json:"specialization"`
+	YearsOfExperience int32  `json:"years_of_experience"`
+}

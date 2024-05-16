@@ -9,6 +9,8 @@ service Doctor{
     rpc IndividualDoctor(Doid)returns(DoctorsDetailr){};
     rpc DoctorProfile(Do_id)returns(DoctorsDetailr){};
     rpc RateDoctor(RateDoctorReq)returns(Rate){};
+    rpc UpdateDoctorProifle(UpdateReq)returns(UpdateDoctor){};
+
 
 }
 message DoctorSignUpRequest{
@@ -75,4 +77,15 @@ message RateDoctorReq{
     string doctor_id=2;
     Rate Rate=3;
 
+}
+message UpdateDoctor{
+    string full_name = 1;
+    string email = 2;
+    string phone_number = 3;
+    string specialization = 4;
+    int32 years_of_experience = 5;
+}
+message UpdateReq{
+    uint64 id=1;
+    UpdateDoctor body =2;
 }

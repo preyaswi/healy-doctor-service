@@ -207,3 +207,19 @@ func (dr *doctorRepository) RateDoctor(patient_id int, doctor_id string, rate ui
 	return rating, nil
 
 }
+func (dr *doctorRepository) UpdateDoctorField(field string, value interface{}, doctorID uint) error {
+	err := dr.DB.Model(&domain.Doctor{}).Where("id = ?", doctorID).Update(field, value).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dr *doctorRepository) DoctorDetails(doctorID int) (models.UpdateDoctor, error) {
+	var doctor models.UpdateDoctor
+	err := dr.DB.Raw("select d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience from doctors as d where id=?",doctorID ).Row().Scan(&doctor.FullName,&doctor.Email,&doctor.PhoneNumber,&doctor.Specialization,&doctor.YearsOfExperience)
+	if err != nil {
+		return models.UpdateDoctor{}, errors.New("could not get doctor details")
+	}
+	return doctor, nil
+}

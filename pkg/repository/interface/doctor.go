@@ -15,4 +15,8 @@ type DoctorRepository interface{
 	CheckDoctorExistbyid(id string)(bool,error)
 	RateDoctor(patient_id int,doctor_id string,rate uint32)(int,error)
 
+	UpdateDoctorField(field string, value interface{}, doctorID uint) error
+	DoctorDetails(doctorID int) (models.UpdateDoctor, error)
+
+
 }

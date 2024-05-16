@@ -71,7 +71,7 @@ func (du *doctorUseCase) DoctorSignUp(doctor models.DoctorSignUp) (models.Doctor
 		RefreshToken: refreshToken,
 	}, nil
 }
-func (du *doctorUseCase) DoctorLogin( doctor models.DoctorLogin) (models.DoctorSignUpResponse, error) {
+func (du *doctorUseCase) DoctorLogin(doctor models.DoctorLogin) (models.DoctorSignUpResponse, error) {
 	data, err := du.doctorRepository.CheckDoctorExistsByEmail(doctor.Email)
 	if err != nil {
 		return models.DoctorSignUpResponse{}, errors.New("error with server")
@@ -98,45 +98,101 @@ func (du *doctorUseCase) DoctorLogin( doctor models.DoctorLogin) (models.DoctorS
 		return models.DoctorSignUpResponse{}, errors.New("counldn't create refreshtoken due to internal error")
 	}
 	return models.DoctorSignUpResponse{
-		DoctorDetail:      doctorDetail,
+		DoctorDetail: doctorDetail,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
-func (du *doctorUseCase)DoctorsList() ([]models.DoctorsDetails, error) {
-	doctors,err:=du.doctorRepository.GetDoctorsDetail()
-	if err!=nil{
-		return nil,err
+func (du *doctorUseCase) DoctorsList() ([]models.DoctorsDetails, error) {
+	doctors, err := du.doctorRepository.GetDoctorsDetail()
+	if err != nil {
+		return nil, err
 	}
-	return doctors,nil
+	return doctors, nil
 }
-func(du *doctorUseCase) IndividualDoctor(doctor_id string)(models.DoctorsDetails,error){
-	doctor,err:=du.doctorRepository.ShowIndividualDoctor(doctor_id)
-	if err!=nil{
-		return models.DoctorsDetails{},err
+func (du *doctorUseCase) IndividualDoctor(doctor_id string) (models.DoctorsDetails, error) {
+	doctor, err := du.doctorRepository.ShowIndividualDoctor(doctor_id)
+	if err != nil {
+		return models.DoctorsDetails{}, err
 	}
-	return doctor,nil
+	return doctor, nil
 }
-func (du *doctorUseCase)DoctorProfile(id int)(models.DoctorsDetails,error)  {
-	doctor,err:=du.doctorRepository.DoctorProfile(id)
-	if err!=nil{
-		return models.DoctorsDetails{},err
+func (du *doctorUseCase) DoctorProfile(id int) (models.DoctorsDetails, error) {
+	doctor, err := du.doctorRepository.DoctorProfile(id)
+	if err != nil {
+		return models.DoctorsDetails{}, err
 	}
-	return doctor,nil
+	return doctor, nil
 }
-func (du *doctorUseCase) RateDoctor(patientid int,doctorid string,rate uint32)(uint32,error) {
-	ok,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
-	if err!=nil{
-		return 0,err
+func (du *doctorUseCase) RateDoctor(patientid int, doctorid string, rate uint32) (uint32, error) {
+	ok, err := du.doctorRepository.CheckDoctorExistbyid(doctorid)
+	if err != nil {
+		return 0, err
 	}
-	if !ok{
-		return 0,errors.New("doctor with this id is not exsisting")
+	if !ok {
+		return 0, errors.New("doctor with this id is not exsisting")
 	}
-	rated,err:=du.doctorRepository.RateDoctor(patientid,doctorid,rate)
-	if err!=nil{
-		fmt.Println(rated,"rated")
-		return 0,err
+	rated, err := du.doctorRepository.RateDoctor(patientid, doctorid, rate)
+	if err != nil {
+		fmt.Println(rated, "rated")
+		return 0, err
 	}
-	return uint32(rated),nil
+	return uint32(rated), nil
 
+}
+func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateDoctor) (models.UpdateDoctor, error) {
+	// Check if the email already exists and it's not the same doctor
+	if doctor.Email != "" {
+		existingDoctor, err := du.doctorRepository.CheckDoctorExistsByEmail(doctor.Email)
+		if err != nil {
+			return models.UpdateDoctor{}, errors.New("error with server")
+		}
+		if existingDoctor != nil && existingDoctor.ID != uint(doctorID) {
+			return models.UpdateDoctor{}, errors.New("doctor already exists, choose a different email")
+		}
+	}
+
+	// Check if the phone number already exists and it's not the same doctor
+	if doctor.PhoneNumber != "" {
+		existingDoctor, err := du.doctorRepository.CheckDoctorExistsByPhone(doctor.PhoneNumber)
+		if err != nil {
+			return models.UpdateDoctor{}, errors.New("error with server")
+		}
+		if existingDoctor != nil && existingDoctor.ID != uint(doctorID) {
+			return models.UpdateDoctor{}, errors.New("doctor with this phone number already exists")
+		}
+	}
+
+	// Update fields
+	if doctor.Email !="" {
+		if err := du.doctorRepository.UpdateDoctorField("email", doctor.Email, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
+	if doctor.FullName !="" {
+		if err := du.doctorRepository.UpdateDoctorField("full_name", doctor.FullName, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
+	if doctor.PhoneNumber !="" {
+		if err := du.doctorRepository.UpdateDoctorField("phone_number", doctor.PhoneNumber, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
+	if doctor.Specialization!="" {
+		if err := du.doctorRepository.UpdateDoctorField("specialization", doctor.Specialization, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
+	if doctor.YearsOfExperience!= 0 {
+		if err := du.doctorRepository.UpdateDoctorField("years_of_experience", doctor.YearsOfExperience, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
+	udated,err:=du.doctorRepository.DoctorDetails(doctorID)
+	if err!=nil{
+		return models.UpdateDoctor{},err
+	}
+	fmt.Println(udated,"updated details")
+	return udated,nil
 }
