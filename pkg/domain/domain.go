@@ -8,6 +8,7 @@ type Doctor struct {
     Specialization    string `json:"specialization"`
     YearsOfExperience int32  `json:"years_of_experience"`
     LicenseNumber     string `json:"license_number" gorm:"unique"`
+    Fees int64 `json:"fees"`
 }
 type Review struct {
     ID        uint `json:"id" gorm:"primaryKey;autoIncrement"`

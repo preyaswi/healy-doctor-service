@@ -19,13 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Doctor_DoctorSignUp_FullMethodName        = "/doctor.Doctor/DoctorSignUp"
-	Doctor_DoctorLogin_FullMethodName         = "/doctor.Doctor/DoctorLogin"
-	Doctor_DoctorsDetail_FullMethodName       = "/doctor.Doctor/DoctorsDetail"
-	Doctor_IndividualDoctor_FullMethodName    = "/doctor.Doctor/IndividualDoctor"
-	Doctor_DoctorProfile_FullMethodName       = "/doctor.Doctor/DoctorProfile"
-	Doctor_RateDoctor_FullMethodName          = "/doctor.Doctor/RateDoctor"
-	Doctor_UpdateDoctorProifle_FullMethodName = "/doctor.Doctor/UpdateDoctorProifle"
+	Doctor_DoctorSignUp_FullMethodName           = "/doctor.Doctor/DoctorSignUp"
+	Doctor_DoctorLogin_FullMethodName            = "/doctor.Doctor/DoctorLogin"
+	Doctor_DoctorsDetail_FullMethodName          = "/doctor.Doctor/DoctorsDetail"
+	Doctor_IndividualDoctor_FullMethodName       = "/doctor.Doctor/IndividualDoctor"
+	Doctor_DoctorProfile_FullMethodName          = "/doctor.Doctor/DoctorProfile"
+	Doctor_RateDoctor_FullMethodName             = "/doctor.Doctor/RateDoctor"
+	Doctor_UpdateDoctorProifle_FullMethodName    = "/doctor.Doctor/UpdateDoctorProifle"
+	Doctor_DoctorDetailforPayment_FullMethodName = "/doctor.Doctor/DoctorDetailforPayment"
 )
 
 // DoctorClient is the client API for Doctor service.
@@ -39,6 +40,7 @@ type DoctorClient interface {
 	DoctorProfile(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorsDetailr, error)
 	RateDoctor(ctx context.Context, in *RateDoctorReq, opts ...grpc.CallOption) (*Rate, error)
 	UpdateDoctorProifle(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*UpdateDoctor, error)
+	DoctorDetailforPayment(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorPaymentDetail, error)
 }
 
 type doctorClient struct {
@@ -112,6 +114,15 @@ func (c *doctorClient) UpdateDoctorProifle(ctx context.Context, in *UpdateReq, o
 	return out, nil
 }
 
+func (c *doctorClient) DoctorDetailforPayment(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorPaymentDetail, error) {
+	out := new(DoctorPaymentDetail)
+	err := c.cc.Invoke(ctx, Doctor_DoctorDetailforPayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DoctorServer is the server API for Doctor service.
 // All implementations must embed UnimplementedDoctorServer
 // for forward compatibility
@@ -123,6 +134,7 @@ type DoctorServer interface {
 	DoctorProfile(context.Context, *DoId) (*DoctorsDetailr, error)
 	RateDoctor(context.Context, *RateDoctorReq) (*Rate, error)
 	UpdateDoctorProifle(context.Context, *UpdateReq) (*UpdateDoctor, error)
+	DoctorDetailforPayment(context.Context, *DoId) (*DoctorPaymentDetail, error)
 	mustEmbedUnimplementedDoctorServer()
 }
 
@@ -150,6 +162,9 @@ func (UnimplementedDoctorServer) RateDoctor(context.Context, *RateDoctorReq) (*R
 }
 func (UnimplementedDoctorServer) UpdateDoctorProifle(context.Context, *UpdateReq) (*UpdateDoctor, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDoctorProifle not implemented")
+}
+func (UnimplementedDoctorServer) DoctorDetailforPayment(context.Context, *DoId) (*DoctorPaymentDetail, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DoctorDetailforPayment not implemented")
 }
 func (UnimplementedDoctorServer) mustEmbedUnimplementedDoctorServer() {}
 
@@ -290,6 +305,24 @@ func _Doctor_UpdateDoctorProifle_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Doctor_DoctorDetailforPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DoId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DoctorServer).DoctorDetailforPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Doctor_DoctorDetailforPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DoctorServer).DoctorDetailforPayment(ctx, req.(*DoId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Doctor_ServiceDesc is the grpc.ServiceDesc for Doctor service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -324,6 +357,10 @@ var Doctor_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDoctorProifle",
 			Handler:    _Doctor_UpdateDoctorProifle_Handler,
+		},
+		{
+			MethodName: "DoctorDetailforPayment",
+			Handler:    _Doctor_DoctorDetailforPayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

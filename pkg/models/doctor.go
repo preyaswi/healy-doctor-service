@@ -49,3 +49,8 @@ type UpdateDoctor struct{
 	Specialization    string `json:"specialization"`
 	YearsOfExperience int32  `json:"years_of_experience"`
 }
+type DoctorPaymentDetail struct{
+	Doctor_id int
+	DoctorName string
+	Fees uint64
+}

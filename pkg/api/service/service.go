@@ -163,3 +163,14 @@ func (d *DoctorServer) UpdateDoctorProifle(ctx context.Context,req *pb.UpdateReq
 		YearsOfExperience: res.YearsOfExperience,
 	},nil
 }
+func (d *DoctorServer)DoctorDetailforPayment(ctx context.Context,req  *pb.DoId) (*pb.DoctorPaymentDetail, error)  {
+	res,err:=d.doctorUseCase.DoctorDetailforPayment(int(req.Id))
+	if err!=nil{
+		return &pb.DoctorPaymentDetail{},nil
+	}
+	return &pb.DoctorPaymentDetail{
+		DoctorId: int32(res.Doctor_id),
+		DoctorName: res.DoctorName,
+		Fees: res.Fees,
+	},nil
+}

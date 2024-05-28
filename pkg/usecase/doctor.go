@@ -7,6 +7,7 @@ import (
 	usecaseint "doctor-service/pkg/usecase/interface"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -125,7 +126,11 @@ func (du *doctorUseCase) DoctorProfile(id int) (models.DoctorsDetails, error) {
 	return doctor, nil
 }
 func (du *doctorUseCase) RateDoctor(patientid int, doctorid string, rate uint32) (uint32, error) {
-	ok, err := du.doctorRepository.CheckDoctorExistbyid(doctorid)
+	doctor_id,err:= strconv.Atoi(doctorid)
+	if err!=nil{
+		return 0,errors.New("couldn't convert doctor string to int")
+	}
+	ok, err := du.doctorRepository.CheckDoctorExistbyid(doctor_id)
 	if err != nil {
 		return 0, err
 	}
@@ -195,4 +200,19 @@ func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateD
 	}
 	fmt.Println(udated,"updated details")
 	return udated,nil
+}
+func (du *doctorUseCase)DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)  {
+	doctorexist,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
+	if err!=nil{
+		return models.DoctorPaymentDetail{},err
+
+	}
+	if !doctorexist{
+		return models.DoctorPaymentDetail{},errors.New("doctor doesnt exisist,check the id")
+	}
+	doctorPaymentdetails,err:=du.doctorRepository.DoctorDetailforPayment(doctorid)
+	if err!=nil{
+		return models.DoctorPaymentDetail{},err
+	}
+	return doctorPaymentdetails,nil
 }

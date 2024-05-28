@@ -5,7 +5,6 @@ import (
 	"doctor-service/pkg/models"
 	interfaces "doctor-service/pkg/repository/interface"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -136,7 +135,6 @@ func (dr *doctorRepository) ShowIndividualDoctor(doctor_id string) (models.Docto
 	if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
 		return models.DoctorsDetails{}, err
 	}
-	fmt.Println(doctorDetail, "doctodetails")
 	// Populate the result with doctor details
 	doctorDetails = models.DoctorsDetails{
 		DoctorDetail: doctorDetail,
@@ -184,7 +182,7 @@ func (dr *doctorRepository) DoctorProfile(id int) (models.DoctorsDetails, error)
 
 	return doctorDetails, nil
 }
-func (dr *doctorRepository) CheckDoctorExistbyid(id string) (bool, error) {
+func (dr *doctorRepository) CheckDoctorExistbyid(id int) (bool, error) {
 	var count int64
 	result := dr.DB.Model(&domain.Doctor{}).Where("id = ?", id).Count(&count)
 	if result.Error != nil {
@@ -222,4 +220,12 @@ func (dr *doctorRepository) DoctorDetails(doctorID int) (models.UpdateDoctor, er
 		return models.UpdateDoctor{}, errors.New("could not get doctor details")
 	}
 	return doctor, nil
+}
+func (dr *doctorRepository)DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)  {
+	var doctorpaymntdetails models.DoctorPaymentDetail
+	err:=dr.DB.Raw("select d.id,d.full_name,d.fees from doctors as d where d.id=?",doctorid).Row().Scan(&doctorpaymntdetails.Doctor_id,&doctorpaymntdetails.DoctorName,&doctorpaymntdetails.Fees)
+	if err!=nil{
+		 return models.DoctorPaymentDetail{},err
+	}
+	return doctorpaymntdetails,nil
 }
