@@ -17,7 +17,9 @@ type DoctorRepository interface{
 
 	UpdateDoctorField(field string, value interface{}, doctorID uint) error
 	DoctorDetails(doctorID int) (models.UpdateDoctor, error)
-	DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)
+	
+	DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error)
+
 
 
 }

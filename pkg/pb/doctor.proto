@@ -10,7 +10,9 @@ service Doctor{
     rpc DoctorProfile(Do_id)returns(DoctorsDetailr){};
     rpc RateDoctor(RateDoctorReq)returns(Rate){};
     rpc UpdateDoctorProifle(UpdateReq)returns(UpdateDoctor){};
-    rpc DoctorDetailforPayment(Do_id)returns(DoctorPaymentDetail){};
+
+    rpc Checkdoctor(doctorreq)returns(doctorres){};
+    rpc DoctorDetailforBooking(doctorreq)returns(bookingres){};
 
 
 }
@@ -90,8 +92,16 @@ message UpdateReq{
     uint64 id=1;
     UpdateDoctor body =2;
 }
-message DoctorPaymentDetail {
-    int32 Doctor_id  =1;
-   string DoctorName =2;
-    uint64 Fees   =3;
+
+message doctorreq{
+    int32 doctor_id=1;
+}
+message doctorres{
+    bool bool=1;
+}
+message bookingres{
+   int32 doctor_id=1;
+    string doctor_name=2;
+   string doctor_email=3;
+   int64 fees=4;
 }

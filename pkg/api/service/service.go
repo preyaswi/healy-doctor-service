@@ -163,14 +163,25 @@ func (d *DoctorServer) UpdateDoctorProifle(ctx context.Context,req *pb.UpdateReq
 		YearsOfExperience: res.YearsOfExperience,
 	},nil
 }
-func (d *DoctorServer)DoctorDetailforPayment(ctx context.Context,req  *pb.DoId) (*pb.DoctorPaymentDetail, error)  {
-	res,err:=d.doctorUseCase.DoctorDetailforPayment(int(req.Id))
+
+func (d *DoctorServer)Checkdoctor(ctx context.Context,req *pb.Doctorreq) (*pb.Doctorres, error)  {
+	ok,err:=d.doctorUseCase.CheckDoctor(int(req.DoctorId))
 	if err!=nil{
-		return &pb.DoctorPaymentDetail{},nil
+		return &pb.Doctorres{},err
 	}
-	return &pb.DoctorPaymentDetail{
-		DoctorId: int32(res.Doctor_id),
-		DoctorName: res.DoctorName,
-		Fees: res.Fees,
+	return &pb.Doctorres{
+		Bool: ok,
+	},nil
+}
+func (d *DoctorServer) DoctorDetailforBooking(ctx context.Context, req *pb.Doctorreq) (*pb.Bookingres, error) {
+	doctordetail,err:=d.doctorUseCase.DoctorDetailforBooking(int(req.DoctorId))
+	if err!=nil{
+		return &pb.Bookingres{},err
+	}
+	return &pb.Bookingres{
+		DoctorId: int32(doctordetail.Doctorid),
+		DoctorName: doctordetail.DoctorName,
+		DoctorEmail: doctordetail.DoctorEmail,
+		Fees: int64(doctordetail.Fees),
 	},nil
 }

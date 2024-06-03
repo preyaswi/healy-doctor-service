@@ -9,6 +9,8 @@ type DoctorUseCase interface{
 	DoctorProfile(id int)(models.DoctorsDetails,error)
 	RateDoctor(patientid int,doctorid string,rate uint32)(uint32,error)
 	UpdateDoctorProfile(doctorid int,body models.UpdateDoctor)(models.UpdateDoctor,error)
-	DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)
+
+	CheckDoctor(doctorid int)(bool,error)
+	DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error)
 
 }

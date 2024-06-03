@@ -26,7 +26,8 @@ const (
 	Doctor_DoctorProfile_FullMethodName          = "/doctor.Doctor/DoctorProfile"
 	Doctor_RateDoctor_FullMethodName             = "/doctor.Doctor/RateDoctor"
 	Doctor_UpdateDoctorProifle_FullMethodName    = "/doctor.Doctor/UpdateDoctorProifle"
-	Doctor_DoctorDetailforPayment_FullMethodName = "/doctor.Doctor/DoctorDetailforPayment"
+	Doctor_Checkdoctor_FullMethodName            = "/doctor.Doctor/Checkdoctor"
+	Doctor_DoctorDetailforBooking_FullMethodName = "/doctor.Doctor/DoctorDetailforBooking"
 )
 
 // DoctorClient is the client API for Doctor service.
@@ -40,7 +41,8 @@ type DoctorClient interface {
 	DoctorProfile(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorsDetailr, error)
 	RateDoctor(ctx context.Context, in *RateDoctorReq, opts ...grpc.CallOption) (*Rate, error)
 	UpdateDoctorProifle(ctx context.Context, in *UpdateReq, opts ...grpc.CallOption) (*UpdateDoctor, error)
-	DoctorDetailforPayment(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorPaymentDetail, error)
+	Checkdoctor(ctx context.Context, in *Doctorreq, opts ...grpc.CallOption) (*Doctorres, error)
+	DoctorDetailforBooking(ctx context.Context, in *Doctorreq, opts ...grpc.CallOption) (*Bookingres, error)
 }
 
 type doctorClient struct {
@@ -114,9 +116,18 @@ func (c *doctorClient) UpdateDoctorProifle(ctx context.Context, in *UpdateReq, o
 	return out, nil
 }
 
-func (c *doctorClient) DoctorDetailforPayment(ctx context.Context, in *DoId, opts ...grpc.CallOption) (*DoctorPaymentDetail, error) {
-	out := new(DoctorPaymentDetail)
-	err := c.cc.Invoke(ctx, Doctor_DoctorDetailforPayment_FullMethodName, in, out, opts...)
+func (c *doctorClient) Checkdoctor(ctx context.Context, in *Doctorreq, opts ...grpc.CallOption) (*Doctorres, error) {
+	out := new(Doctorres)
+	err := c.cc.Invoke(ctx, Doctor_Checkdoctor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *doctorClient) DoctorDetailforBooking(ctx context.Context, in *Doctorreq, opts ...grpc.CallOption) (*Bookingres, error) {
+	out := new(Bookingres)
+	err := c.cc.Invoke(ctx, Doctor_DoctorDetailforBooking_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +145,8 @@ type DoctorServer interface {
 	DoctorProfile(context.Context, *DoId) (*DoctorsDetailr, error)
 	RateDoctor(context.Context, *RateDoctorReq) (*Rate, error)
 	UpdateDoctorProifle(context.Context, *UpdateReq) (*UpdateDoctor, error)
-	DoctorDetailforPayment(context.Context, *DoId) (*DoctorPaymentDetail, error)
+	Checkdoctor(context.Context, *Doctorreq) (*Doctorres, error)
+	DoctorDetailforBooking(context.Context, *Doctorreq) (*Bookingres, error)
 	mustEmbedUnimplementedDoctorServer()
 }
 
@@ -163,8 +175,11 @@ func (UnimplementedDoctorServer) RateDoctor(context.Context, *RateDoctorReq) (*R
 func (UnimplementedDoctorServer) UpdateDoctorProifle(context.Context, *UpdateReq) (*UpdateDoctor, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDoctorProifle not implemented")
 }
-func (UnimplementedDoctorServer) DoctorDetailforPayment(context.Context, *DoId) (*DoctorPaymentDetail, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DoctorDetailforPayment not implemented")
+func (UnimplementedDoctorServer) Checkdoctor(context.Context, *Doctorreq) (*Doctorres, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Checkdoctor not implemented")
+}
+func (UnimplementedDoctorServer) DoctorDetailforBooking(context.Context, *Doctorreq) (*Bookingres, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DoctorDetailforBooking not implemented")
 }
 func (UnimplementedDoctorServer) mustEmbedUnimplementedDoctorServer() {}
 
@@ -305,20 +320,38 @@ func _Doctor_UpdateDoctorProifle_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Doctor_DoctorDetailforPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoId)
+func _Doctor_Checkdoctor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Doctorreq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DoctorServer).DoctorDetailforPayment(ctx, in)
+		return srv.(DoctorServer).Checkdoctor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Doctor_DoctorDetailforPayment_FullMethodName,
+		FullMethod: Doctor_Checkdoctor_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DoctorServer).DoctorDetailforPayment(ctx, req.(*DoId))
+		return srv.(DoctorServer).Checkdoctor(ctx, req.(*Doctorreq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Doctor_DoctorDetailforBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Doctorreq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DoctorServer).DoctorDetailforBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Doctor_DoctorDetailforBooking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DoctorServer).DoctorDetailforBooking(ctx, req.(*Doctorreq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -359,8 +392,12 @@ var Doctor_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Doctor_UpdateDoctorProifle_Handler,
 		},
 		{
-			MethodName: "DoctorDetailforPayment",
-			Handler:    _Doctor_DoctorDetailforPayment_Handler,
+			MethodName: "Checkdoctor",
+			Handler:    _Doctor_Checkdoctor_Handler,
+		},
+		{
+			MethodName: "DoctorDetailforBooking",
+			Handler:    _Doctor_DoctorDetailforBooking_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

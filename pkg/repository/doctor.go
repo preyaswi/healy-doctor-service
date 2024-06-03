@@ -221,11 +221,11 @@ func (dr *doctorRepository) DoctorDetails(doctorID int) (models.UpdateDoctor, er
 	}
 	return doctor, nil
 }
-func (dr *doctorRepository)DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)  {
-	var doctorpaymntdetails models.DoctorPaymentDetail
-	err:=dr.DB.Raw("select d.id,d.full_name,d.fees from doctors as d where d.id=?",doctorid).Row().Scan(&doctorpaymntdetails.Doctor_id,&doctorpaymntdetails.DoctorName,&doctorpaymntdetails.Fees)
+func (dr *doctorRepository)DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error)  {
+	var doctorbookingdetails models.BookingDoctorDetails
+	err:=dr.DB.Raw("select d.id,d.full_name,d.email,d.fees from doctors as d where d.id=?",doctorid).Row().Scan(&doctorbookingdetails.Doctorid,&doctorbookingdetails.DoctorName,&doctorbookingdetails.DoctorEmail,&doctorbookingdetails.Fees)
 	if err!=nil{
-		 return models.DoctorPaymentDetail{},err
+		return models.BookingDoctorDetails{},err
 	}
-	return doctorpaymntdetails,nil
+	return doctorbookingdetails,nil
 }

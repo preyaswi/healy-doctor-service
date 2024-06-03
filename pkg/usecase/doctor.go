@@ -201,18 +201,18 @@ func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateD
 	fmt.Println(udated,"updated details")
 	return udated,nil
 }
-func (du *doctorUseCase)DoctorDetailforPayment(doctorid int)(models.DoctorPaymentDetail,error)  {
-	doctorexist,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
+func (du *doctorUseCase) DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error) {
+	doctordetail,err:=du.doctorRepository.DoctorDetailforBooking(doctorid)
 	if err!=nil{
-		return models.DoctorPaymentDetail{},err
+		return models.BookingDoctorDetails{},err
+	}
+	return doctordetail,nil
+}
 
-	}
-	if !doctorexist{
-		return models.DoctorPaymentDetail{},errors.New("doctor doesnt exisist,check the id")
-	}
-	doctorPaymentdetails,err:=du.doctorRepository.DoctorDetailforPayment(doctorid)
+func (du *doctorUseCase)CheckDoctor(doctorid int)(bool,error)  {
+	ok,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
 	if err!=nil{
-		return models.DoctorPaymentDetail{},err
+		return false,err
 	}
-	return doctorPaymentdetails,nil
+	return ok,nil
 }
