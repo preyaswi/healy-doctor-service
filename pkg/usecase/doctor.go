@@ -194,6 +194,11 @@ func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateD
 			return models.UpdateDoctor{}, err
 		}
 	}
+	if doctor.Fees!=0{
+		if err := du.doctorRepository.UpdateDoctorField("fees", doctor.YearsOfExperience, uint(doctorID)); err != nil {
+			return models.UpdateDoctor{}, err
+		}
+	}
 	udated,err:=du.doctorRepository.DoctorDetails(doctorID)
 	if err!=nil{
 		return models.UpdateDoctor{},err

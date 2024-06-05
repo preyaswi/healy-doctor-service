@@ -9,54 +9,58 @@ type DoctorSignUp struct {
 	Specialization    string `json:"specialization"`
 	YearsOfExperience int32  `json:"years_of_experience"`
 	LicenseNumber     string `json:"license_number"`
+	Fees              int64  `json:"fees"`
 }
 type DoctorDetail struct {
-	Id                uint
-	FullName          string
-	Email             string
-	PhoneNumber       string
-	Specialization    string
-	YearsOfExperience int32
-	LicenseNumber     string
+	Id                uint `json:"id"`
+	FullName          string `json:"full_name"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phone_number"`
+	Specialization    string `json:"specialization"`
+	YearsOfExperience int32 `json:"years_of_experience"`
+	LicenseNumber     string `json:"license_number"`
+	Fees              int64 `json:"fees"`
 }
-type DoctorSignUpResponse struct{
+type DoctorSignUpResponse struct {
 	DoctorDetail DoctorDetail
 	AccessToken  string
 	RefreshToken string
 }
-type DoctorLogin struct{
+type DoctorLogin struct {
 	Email    string
 	Password string
 }
-type DoctorDetails struct{
+type DoctorDetails struct {
 	Id                uint
 	FullName          string
 	Email             string
 	PhoneNumber       string
-	Password          string 
+	Password          string
 	Specialization    string
 	YearsOfExperience int32
 	LicenseNumber     string
+	Fees              int64
 }
-type DoctorsDetails struct{
+type DoctorsDetails struct {
 	DoctorDetail DoctorDetail
-	Rating int32
+	Rating       int32
 }
-type UpdateDoctor struct{
+type UpdateDoctor struct {
 	FullName          string `json:"full_name"`
 	Email             string `json:"email"`
 	PhoneNumber       string `json:"phone_number"`
 	Specialization    string `json:"specialization"`
 	YearsOfExperience int32  `json:"years_of_experience"`
+	Fees              int64
 }
-type BookingDoctorDetails struct{
-	Doctorid uint 
-	DoctorName string
+type BookingDoctorDetails struct {
+	Doctorid    uint
+	DoctorName  string
 	DoctorEmail string
-	Fees uint64
+	Fees        uint64
 }
-type DoctorPaymentDetail struct{
-	Doctor_id int
+type DoctorPaymentDetail struct {
+	Doctor_id  int
 	DoctorName string
-	Fees uint64
+	Fees       uint64
 }

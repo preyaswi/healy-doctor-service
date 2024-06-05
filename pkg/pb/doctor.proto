@@ -25,6 +25,7 @@ message DoctorSignUpRequest{
     string specialization = 6;
     int32 years_of_experience = 7;
     string license_number = 8;
+    int64 fees=9;
 
 }
 message DoctorDetail{
@@ -35,6 +36,7 @@ message DoctorDetail{
     string specialization = 5;
     int32 years_of_experience = 6;
     string license_number = 7;
+    int64 fees=8;
     
 
 }
@@ -64,7 +66,8 @@ message DoctorsDetailr{
     string specialization = 5;
     int32 years_of_experience = 6;
     string license_number = 7;
-    int32 Rating=8;
+    int64 fees=8;
+    int32 Rating=9;
 }
 message DoctorsDetailre{
     repeated DoctorsDetailr DoctorsDetailr=1;
@@ -87,6 +90,7 @@ message UpdateDoctor{
     string phone_number = 3;
     string specialization = 4;
     int32 years_of_experience = 5;
+    int64 fees=6;
 }
 message UpdateReq{
     uint64 id=1;

@@ -26,6 +26,7 @@ func (d *DoctorServer)DoctorSignUp(ctx context.Context,DoctorSignUpRequest *pb.D
 		Specialization: DoctorSignUpRequest.Specialization,
 		YearsOfExperience: DoctorSignUpRequest.YearsOfExperience,
 		LicenseNumber: DoctorSignUpRequest.LicenseNumber,
+		Fees: DoctorSignUpRequest.Fees,
 	}
 	data,err:=d.doctorUseCase.DoctorSignUp(doctorsignup)
 	if err!=nil{
@@ -39,6 +40,7 @@ func (d *DoctorServer)DoctorSignUp(ctx context.Context,DoctorSignUpRequest *pb.D
 		Specialization: data.DoctorDetail.Specialization,
 		YearsOfExperience: data.DoctorDetail.YearsOfExperience,
 		LicenseNumber: data.DoctorDetail.LicenseNumber,
+		Fees: data.DoctorDetail.Fees,
 	}
 	return &pb.DoctorSignUpResponse{
 		DoctorDetail: doctordetail,
@@ -63,6 +65,7 @@ func (d *DoctorServer)DoctorLogin(ctx context.Context,DoctorLoginRequest *pb.Doc
 		Specialization: data.DoctorDetail.Specialization,
 		YearsOfExperience: data.DoctorDetail.YearsOfExperience,
 		LicenseNumber: data.DoctorDetail.LicenseNumber,
+		Fees: data.DoctorDetail.Fees,
 	}
 	return &pb.DoctorLoginResponse{
 		DoctorDetail: doctordetail,
@@ -86,6 +89,7 @@ func (d *DoctorServer)DoctorsDetail(ctx context.Context,req *pb.Doreq) (*pb.Doct
 			Specialization:    doctor.DoctorDetail.Specialization,
 			YearsOfExperience: doctor.DoctorDetail.YearsOfExperience,
 			LicenseNumber:     doctor.DoctorDetail.LicenseNumber,
+			Fees: doctor.DoctorDetail.Fees,
 			Rating: doctor.Rating,
 		}
 	}
@@ -109,6 +113,7 @@ func ( d *DoctorServer)IndividualDoctor(ctx context.Context,req *pb.Doid) (*pb.D
 		Specialization: doctor.DoctorDetail.Specialization,
 		YearsOfExperience: doctor.DoctorDetail.YearsOfExperience,
 		LicenseNumber: doctor.DoctorDetail.LicenseNumber,
+		Fees: doctor.DoctorDetail.Fees,
 		Rating: doctor.Rating,
 	},nil
 
@@ -126,6 +131,7 @@ func (d *DoctorServer) DoctorProfile(ctx context.Context,req *pb.DoId) (*pb.Doct
 		Specialization: doctor.DoctorDetail.Specialization,
 		YearsOfExperience: doctor.DoctorDetail.YearsOfExperience,
 		LicenseNumber: doctor.DoctorDetail.LicenseNumber,
+		Fees: doctor.DoctorDetail.Fees,
 		Rating: doctor.Rating,
 	},err
 }
@@ -150,6 +156,7 @@ func (d *DoctorServer) UpdateDoctorProifle(ctx context.Context,req *pb.UpdateReq
 		PhoneNumber: req.Body.PhoneNumber,
 		Specialization: req.Body.Specialization,
 		YearsOfExperience: req.Body.YearsOfExperience,
+		Fees: req.Body.Fees,
 	}
 	res,err:=d.doctorUseCase.UpdateDoctorProfile(int(doctorid),body)
 	if err!=nil{
@@ -161,6 +168,7 @@ func (d *DoctorServer) UpdateDoctorProifle(ctx context.Context,req *pb.UpdateReq
 		PhoneNumber: res.PhoneNumber,
 		Specialization: res.Specialization,
 		YearsOfExperience: res.YearsOfExperience,
+		Fees: res.Fees,
 	},nil
 }
 

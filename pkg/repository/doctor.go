@@ -5,6 +5,7 @@ import (
 	"doctor-service/pkg/models"
 	interfaces "doctor-service/pkg/repository/interface"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -54,10 +55,10 @@ func (dr *doctorRepository) CheckDoctorexistsByLicenseNumber(license string) (*d
 func (dr *doctorRepository) DoctorSignup(doctor models.DoctorSignUp) (models.DoctorDetail, error) {
 	var signupDetail models.DoctorDetail
 	err := dr.DB.Raw(`
-	INSERT INTO doctors(full_name, email, phone_number,password, specialization, years_of_experience, license_number)
-	VALUES(?, ?, ?, ?, ?, ?,?)
-	RETURNING id, full_name, email, specialization, years_of_experience,license_number
-`, doctor.FullName, doctor.Email, doctor.PhoneNumber, doctor.Password, doctor.Specialization, doctor.YearsOfExperience, doctor.LicenseNumber).
+	INSERT INTO doctors(full_name, email, phone_number,password, specialization, years_of_experience, license_number,fees)
+	VALUES(?, ?, ?, ?, ?, ?,?,?)
+	RETURNING id, full_name, email,phone_number, specialization, years_of_experience,license_number,fees
+`, doctor.FullName, doctor.Email, doctor.PhoneNumber, doctor.Password, doctor.Specialization, doctor.YearsOfExperience, doctor.LicenseNumber, doctor.Fees).
 		Scan(&signupDetail).Error
 
 	if err != nil {
@@ -69,7 +70,7 @@ func (dr *doctorRepository) GetDoctorsDetail() ([]models.DoctorsDetails, error) 
 	// Query to select doctors along with their average ratings from the reviews table
 	rows, err := dr.DB.Raw(`
 		SELECT 
-			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number, COALESCE(AVG(r.rating), 0) AS average_rating
+			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number,d.fees, COALESCE(AVG(r.rating), 0) AS average_rating
 		FROM 
 			doctors AS d
 		LEFT JOIN 
@@ -90,10 +91,10 @@ func (dr *doctorRepository) GetDoctorsDetail() ([]models.DoctorsDetails, error) 
 		var rating float64 // Use float64 for average rating
 
 		// Scan the row into variables
-		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
+		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &doctorDetail.Fees, &rating); err != nil {
 			return nil, err
 		}
-
+		fmt.Println(doctorDetail, "this is the doctor details form the getdoctordetail")
 		// Append doctor details to the result
 		doctorsDetails = append(doctorsDetails, models.DoctorsDetails{
 			DoctorDetail: doctorDetail,
@@ -106,7 +107,7 @@ func (dr *doctorRepository) GetDoctorsDetail() ([]models.DoctorsDetails, error) 
 func (dr *doctorRepository) ShowIndividualDoctor(doctor_id string) (models.DoctorsDetails, error) {
 	rows, err := dr.DB.Raw(`
 		SELECT 
-			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number, COALESCE(AVG(r.rating), 0) AS average_rating
+			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number,d.fees, COALESCE(AVG(r.rating), 0) AS average_rating
 		FROM 
 			doctors AS d
 		LEFT JOIN 
@@ -132,7 +133,7 @@ func (dr *doctorRepository) ShowIndividualDoctor(doctor_id string) (models.Docto
 	var rating float64 // Use float64 for average rating
 
 	// Scan the row into variables
-	if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
+	if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &doctorDetail.Fees, &rating); err != nil {
 		return models.DoctorsDetails{}, err
 	}
 	// Populate the result with doctor details
@@ -146,7 +147,7 @@ func (dr *doctorRepository) ShowIndividualDoctor(doctor_id string) (models.Docto
 func (dr *doctorRepository) DoctorProfile(id int) (models.DoctorsDetails, error) {
 	rows, err := dr.DB.Raw(`
 		SELECT 
-			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number, COALESCE(AVG(r.rating), 0) AS average_rating
+			d.id, d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience, d.license_number,d.fees, COALESCE(AVG(r.rating), 0) AS average_rating
 		FROM 
 			doctors AS d
 		LEFT JOIN 
@@ -169,10 +170,10 @@ func (dr *doctorRepository) DoctorProfile(id int) (models.DoctorsDetails, error)
 		var rating float64 // Use float64 for average rating
 
 		// Scan the row into variables
-		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &rating); err != nil {
+		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &doctorDetail.Fees, &rating); err != nil {
 			return models.DoctorsDetails{}, err
 		}
-
+		fmt.Println(doctorDetail)
 		// Populate the result with doctor details
 		doctorDetails = models.DoctorsDetails{
 			DoctorDetail: doctorDetail,
@@ -215,17 +216,17 @@ func (dr *doctorRepository) UpdateDoctorField(field string, value interface{}, d
 
 func (dr *doctorRepository) DoctorDetails(doctorID int) (models.UpdateDoctor, error) {
 	var doctor models.UpdateDoctor
-	err := dr.DB.Raw("select d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience from doctors as d where id=?",doctorID ).Row().Scan(&doctor.FullName,&doctor.Email,&doctor.PhoneNumber,&doctor.Specialization,&doctor.YearsOfExperience)
+	err := dr.DB.Raw("select d.full_name, d.email, d.phone_number, d.specialization, d.years_of_experience,d.fees from doctors as d where id=?", doctorID).Row().Scan(&doctor.FullName, &doctor.Email, &doctor.PhoneNumber, &doctor.Specialization, &doctor.YearsOfExperience, &doctor.Fees)
 	if err != nil {
 		return models.UpdateDoctor{}, errors.New("could not get doctor details")
 	}
 	return doctor, nil
 }
-func (dr *doctorRepository)DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error)  {
+func (dr *doctorRepository) DoctorDetailforBooking(doctorid int) (models.BookingDoctorDetails, error) {
 	var doctorbookingdetails models.BookingDoctorDetails
-	err:=dr.DB.Raw("select d.id,d.full_name,d.email,d.fees from doctors as d where d.id=?",doctorid).Row().Scan(&doctorbookingdetails.Doctorid,&doctorbookingdetails.DoctorName,&doctorbookingdetails.DoctorEmail,&doctorbookingdetails.Fees)
-	if err!=nil{
-		return models.BookingDoctorDetails{},err
+	err := dr.DB.Raw("select d.id,d.full_name,d.email,d.fees from doctors as d where d.id=?", doctorid).Row().Scan(&doctorbookingdetails.Doctorid, &doctorbookingdetails.DoctorName, &doctorbookingdetails.DoctorEmail, &doctorbookingdetails.Fees)
+	if err != nil {
+		return models.BookingDoctorDetails{}, err
 	}
-	return doctorbookingdetails,nil
+	return doctorbookingdetails, nil
 }
