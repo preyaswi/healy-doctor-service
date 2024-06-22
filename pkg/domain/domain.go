@@ -14,6 +14,6 @@ type Doctor struct {
 type Review struct {
 	ID        uint `json:"id" gorm:"primaryKey;autoIncrement"`
 	DoctorID  uint `json:"doctor_id" gorm:"not null;uniqueIndex:unique_doctor_patient"`
-	PatientID uint `json:"patient_id" gorm:"not null;uniqueIndex:unique_doctor_patient"`
+	PatientID string `json:"patient_id" gorm:"not null;uniqueIndex:unique_doctor_patient"`
 	Rating    int  `json:"rating" gorm:"not null"`
 }

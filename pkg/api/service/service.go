@@ -139,7 +139,7 @@ func (d *DoctorServer)RateDoctor(ctx context.Context,req *pb.RateDoctorReq) (*pb
 	patientid:=req.Patientid
 	doctorId:=req.DoctorId
 	rate:=req.Rate.Rate
-	rated,err:=d.doctorUseCase.RateDoctor(int(patientid),doctorId,rate)
+	rated,err:=d.doctorUseCase.RateDoctor(patientid,doctorId,rate)
 	if err!=nil{
 		return &pb.Rate{},err
 	}

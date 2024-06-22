@@ -5,7 +5,6 @@ import (
 	"doctor-service/pkg/models"
 	interfaces "doctor-service/pkg/repository/interface"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -94,7 +93,6 @@ func (dr *doctorRepository) GetDoctorsDetail() ([]models.DoctorsDetails, error) 
 		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &doctorDetail.Fees, &rating); err != nil {
 			return nil, err
 		}
-		fmt.Println(doctorDetail, "this is the doctor details form the getdoctordetail")
 		// Append doctor details to the result
 		doctorsDetails = append(doctorsDetails, models.DoctorsDetails{
 			DoctorDetail: doctorDetail,
@@ -173,7 +171,6 @@ func (dr *doctorRepository) DoctorProfile(id int) (models.DoctorsDetails, error)
 		if err := rows.Scan(&doctorDetail.Id, &doctorDetail.FullName, &doctorDetail.Email, &doctorDetail.PhoneNumber, &doctorDetail.Specialization, &doctorDetail.YearsOfExperience, &doctorDetail.LicenseNumber, &doctorDetail.Fees, &rating); err != nil {
 			return models.DoctorsDetails{}, err
 		}
-		fmt.Println(doctorDetail)
 		// Populate the result with doctor details
 		doctorDetails = models.DoctorsDetails{
 			DoctorDetail: doctorDetail,
@@ -191,7 +188,7 @@ func (dr *doctorRepository) CheckDoctorExistbyid(id int) (bool, error) {
 	}
 	return count > 0, nil
 }
-func (dr *doctorRepository) RateDoctor(patient_id int, doctor_id string, rate uint32) (int, error) {
+func (dr *doctorRepository) RateDoctor(patient_id string, doctor_id string, rate uint32) (int, error) {
 	var rating int
 	err := dr.DB.Raw(`
 	INSERT INTO reviews (doctor_id, patient_id, rating)

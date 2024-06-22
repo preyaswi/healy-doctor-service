@@ -13,7 +13,7 @@ type DoctorRepository interface{
 	ShowIndividualDoctor(doctor_id string)(models.DoctorsDetails,error)
 	DoctorProfile(id int)(models.DoctorsDetails,error)
 	CheckDoctorExistbyid(id int)(bool,error)
-	RateDoctor(patient_id int,doctor_id string,rate uint32)(int,error)
+	RateDoctor(patient_id string,doctor_id string,rate uint32)(int,error)
 
 	UpdateDoctorField(field string, value interface{}, doctorID uint) error
 	DoctorDetails(doctorID int) (models.UpdateDoctor, error)

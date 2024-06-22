@@ -6,7 +6,6 @@ import (
 	interfaces "doctor-service/pkg/repository/interface"
 	usecaseint "doctor-service/pkg/usecase/interface"
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/jinzhu/copier"
@@ -125,7 +124,7 @@ func (du *doctorUseCase) DoctorProfile(id int) (models.DoctorsDetails, error) {
 	}
 	return doctor, nil
 }
-func (du *doctorUseCase) RateDoctor(patientid int, doctorid string, rate uint32) (uint32, error) {
+func (du *doctorUseCase) RateDoctor(patientid string, doctorid string, rate uint32) (uint32, error) {
 	doctor_id,err:= strconv.Atoi(doctorid)
 	if err!=nil{
 		return 0,errors.New("couldn't convert doctor string to int")
@@ -139,7 +138,6 @@ func (du *doctorUseCase) RateDoctor(patientid int, doctorid string, rate uint32)
 	}
 	rated, err := du.doctorRepository.RateDoctor(patientid, doctorid, rate)
 	if err != nil {
-		fmt.Println(rated, "rated")
 		return 0, err
 	}
 	return uint32(rated), nil
@@ -203,7 +201,6 @@ func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateD
 	if err!=nil{
 		return models.UpdateDoctor{},err
 	}
-	fmt.Println(udated,"updated details")
 	return udated,nil
 }
 func (du *doctorUseCase) DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error) {
