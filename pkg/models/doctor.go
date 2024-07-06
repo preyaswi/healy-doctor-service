@@ -12,14 +12,14 @@ type DoctorSignUp struct {
 	Fees              int64  `json:"fees"`
 }
 type DoctorDetail struct {
-	Id                uint `json:"id"`
+	Id                uint   `json:"id"`
 	FullName          string `json:"full_name"`
 	Email             string `json:"email"`
 	PhoneNumber       string `json:"phone_number"`
 	Specialization    string `json:"specialization"`
-	YearsOfExperience int32 `json:"years_of_experience"`
+	YearsOfExperience int32  `json:"years_of_experience"`
 	LicenseNumber     string `json:"license_number"`
-	Fees              int64 `json:"fees"`
+	Fees              int64  `json:"fees"`
 }
 type DoctorSignUpResponse struct {
 	DoctorDetail DoctorDetail

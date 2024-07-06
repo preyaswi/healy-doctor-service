@@ -14,11 +14,11 @@ func InitializeApi(cfg config.Config) (*server.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	doctorRepository:=repository.NewDoctorRepository(gormDB)
-	doctorUseCase:=usecase.NewDoctorUseCase(doctorRepository)
+	doctorRepository := repository.NewDoctorRepository(gormDB)
+	doctorUseCase := usecase.NewDoctorUseCase(doctorRepository)
 
-doctorService:=service.NewDoctorServer(doctorUseCase)
-doctorserver,err:=server.NewGRPCServer(cfg,doctorService)
+	doctorService := service.NewDoctorServer(doctorUseCase)
+	doctorserver, err := server.NewGRPCServer(cfg, doctorService)
 	if err != nil {
 		return &server.Server{}, err
 	}

@@ -9,8 +9,9 @@ import (
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
+
 type AuthUserClaims struct {
-	Id    string    `json:"id"`
+	Id    string `json:"id"`
 	Email string `json:"email"`
 	Role  string `json:"role"`
 	jwt.StandardClaims
@@ -26,7 +27,7 @@ func PasswordHash(password string) (string, error) {
 }
 
 func GenerateTokenUsers(userID int, userEmail string, expirationTime time.Time) (string, error) {
-	userId:=strconv.Itoa(userID)
+	userId := strconv.Itoa(userID)
 	claims := &AuthUserClaims{
 		Id:    userId,
 		Email: userEmail,

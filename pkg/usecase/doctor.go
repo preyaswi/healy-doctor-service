@@ -125,9 +125,9 @@ func (du *doctorUseCase) DoctorProfile(id int) (models.DoctorsDetails, error) {
 	return doctor, nil
 }
 func (du *doctorUseCase) RateDoctor(patientid string, doctorid string, rate uint32) (uint32, error) {
-	doctor_id,err:= strconv.Atoi(doctorid)
-	if err!=nil{
-		return 0,errors.New("couldn't convert doctor string to int")
+	doctor_id, err := strconv.Atoi(doctorid)
+	if err != nil {
+		return 0, errors.New("couldn't convert doctor string to int")
 	}
 	ok, err := du.doctorRepository.CheckDoctorExistbyid(doctor_id)
 	if err != nil {
@@ -167,54 +167,54 @@ func (du *doctorUseCase) UpdateDoctorProfile(doctorID int, doctor models.UpdateD
 	}
 
 	// Update fields
-	if doctor.Email !="" {
+	if doctor.Email != "" {
 		if err := du.doctorRepository.UpdateDoctorField("email", doctor.Email, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	if doctor.FullName !="" {
+	if doctor.FullName != "" {
 		if err := du.doctorRepository.UpdateDoctorField("full_name", doctor.FullName, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	if doctor.PhoneNumber !="" {
+	if doctor.PhoneNumber != "" {
 		if err := du.doctorRepository.UpdateDoctorField("phone_number", doctor.PhoneNumber, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	if doctor.Specialization!="" {
+	if doctor.Specialization != "" {
 		if err := du.doctorRepository.UpdateDoctorField("specialization", doctor.Specialization, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	if doctor.YearsOfExperience!= 0 {
+	if doctor.YearsOfExperience != 0 {
 		if err := du.doctorRepository.UpdateDoctorField("years_of_experience", doctor.YearsOfExperience, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	if doctor.Fees!=0{
+	if doctor.Fees != 0 {
 		if err := du.doctorRepository.UpdateDoctorField("fees", doctor.YearsOfExperience, uint(doctorID)); err != nil {
 			return models.UpdateDoctor{}, err
 		}
 	}
-	udated,err:=du.doctorRepository.DoctorDetails(doctorID)
-	if err!=nil{
-		return models.UpdateDoctor{},err
+	udated, err := du.doctorRepository.DoctorDetails(doctorID)
+	if err != nil {
+		return models.UpdateDoctor{}, err
 	}
-	return udated,nil
+	return udated, nil
 }
-func (du *doctorUseCase) DoctorDetailforBooking(doctorid int)(models.BookingDoctorDetails,error) {
-	doctordetail,err:=du.doctorRepository.DoctorDetailforBooking(doctorid)
-	if err!=nil{
-		return models.BookingDoctorDetails{},err
+func (du *doctorUseCase) DoctorDetailforBooking(doctorid int) (models.BookingDoctorDetails, error) {
+	doctordetail, err := du.doctorRepository.DoctorDetailforBooking(doctorid)
+	if err != nil {
+		return models.BookingDoctorDetails{}, err
 	}
-	return doctordetail,nil
+	return doctordetail, nil
 }
 
-func (du *doctorUseCase)CheckDoctor(doctorid int)(bool,error)  {
-	ok,err:=du.doctorRepository.CheckDoctorExistbyid(doctorid)
-	if err!=nil{
-		return false,err
+func (du *doctorUseCase) CheckDoctor(doctorid int) (bool, error) {
+	ok, err := du.doctorRepository.CheckDoctorExistbyid(doctorid)
+	if err != nil {
+		return false, err
 	}
-	return ok,nil
+	return ok, nil
 }
